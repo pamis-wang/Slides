@@ -1,0 +1,263 @@
+<title>工作中斷的恢復成本</title>
+<style>
+:root{
+  --ground:#ffffff; --surface:#ffffff; --surface-2:#f4f4f2;
+  --ink:#16171a; --ink-2:#4e5158; --ink-3:#85888f;
+  --rule:#dcdcd8; --rule-strong:#c8c8c2;
+  --tva:#2a78d6; --tva-wash:rgba(42,120,214,.10);
+  --jump:#eb6834; --jump-wash:rgba(235,104,52,.10);
+  --critical:#d03b3b; --good:#006300;
+  --shadow:0 1px 2px rgba(22,23,26,.05);
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang TC","Microsoft JhengHei","Noto Sans CJK TC","Helvetica Neue",Arial,sans-serif;
+  --serif:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang TC","Microsoft JhengHei","Noto Sans CJK TC","Helvetica Neue",Arial,sans-serif;
+  --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,"Liberation Mono",monospace;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.75;-webkit-font-smoothing:antialiased}
+
+.masthead{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:#ffffffee;backdrop-filter:blur(8px);border-bottom:1px solid var(--rule)}
+.masthead-in{max-width:920px;margin:0 auto;padding:10px 20px;display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.masthead strong{font-family:var(--serif);font-weight:600;font-size:14px;letter-spacing:.02em}
+.masthead span{font-family:var(--mono);font-size:11.5px;color:var(--ink-3)}
+.masthead .spacer{flex:1 1 auto}
+
+.wrap{max-width:920px;margin:0 auto;padding-inline:20px;padding-block:0 64px}
+
+.title-block{padding-block:44px 30px;border-bottom:2px solid var(--ink)}
+.eyebrow{font-family:var(--mono);font-size:11.5px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--jump);margin:0 0 14px}
+h1{font-family:var(--sans);font-weight:700;font-size:clamp(26px,4.6vw,38px);line-height:1.3;letter-spacing:-.01em;margin:0 0 18px;text-wrap:balance}
+.standfirst{font-size:clamp(15.5px,2.1vw,17px);line-height:1.8;color:var(--ink-2);max-width:62ch;margin:0}
+.standfirst b{color:var(--ink);font-weight:700}
+
+section{padding-block:40px;border-bottom:1px solid var(--rule)}
+section:last-of-type{border-bottom:none}
+h2{font-family:var(--sans);font-weight:700;font-size:21px;line-height:1.4;margin:0 0 8px}
+.sec-no{font-family:var(--mono);font-size:12px;font-weight:600;color:var(--jump);letter-spacing:.1em;display:block;margin-bottom:6px}
+.lede{color:var(--ink-2);margin:0 0 24px;max-width:66ch}
+p{margin:0 0 16px;max-width:66ch}
+p:last-child{margin-bottom:0}
+.num{font-family:var(--mono);font-weight:500;font-variant-numeric:tabular-nums}
+
+/* 研究卡 */
+.study{border:1px solid var(--rule);background:var(--surface);margin-bottom:18px;box-shadow:var(--shadow)}
+.study-hd{padding:16px 20px 12px;border-bottom:1px solid var(--rule)}
+.study-t{font-family:var(--serif);font-weight:600;font-size:16px;margin:0 0 6px;line-height:1.5}
+.study-m{font-family:var(--mono);font-size:11.5px;color:var(--ink-3);line-height:1.6;margin:0}
+.study-bd{padding:14px 20px 18px}
+.study-bd ul{margin:0;padding-left:20px}
+.study-bd li{margin-bottom:9px;color:var(--ink-2);line-height:1.7}
+.study-bd li:last-child{margin-bottom:0}
+.study-bd li b{color:var(--ink)}
+.kpi{font-family:var(--mono);font-weight:600;color:var(--critical);font-variant-numeric:tabular-nums}
+
+.tw{overflow-x:auto;border:1px solid var(--rule);background:var(--surface)}
+table{border-collapse:collapse;width:100%;min-width:480px;font-size:13.5px}
+caption{text-align:left;padding:16px 18px 10px;font-family:var(--serif);font-weight:600;font-size:15px}
+th,td{padding:9px 14px;text-align:left;border-bottom:1px solid var(--rule);vertical-align:middle}
+thead th{font-size:11.5px;font-weight:600;letter-spacing:.06em;color:var(--ink-3);border-bottom:1px solid var(--rule-strong);white-space:nowrap}
+tbody tr:last-child td{border-bottom:none}
+td.n,th.n{text-align:right;font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+tfoot td{font-weight:700;border-top:1px solid var(--rule-strong);background:var(--surface-2)}
+
+.call{border-left:3px solid var(--jump);background:var(--surface);padding:18px 20px;margin-block:22px}
+.call.is-alert{border-left-color:var(--critical)}
+.call.is-ok{border-left-color:var(--tva)}
+.call h3{font-size:14px;font-weight:700;margin:0 0 8px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.call h3 .tag{font-family:var(--mono);font-size:10.5px;font-weight:600;letter-spacing:.08em;padding:2px 7px;border-radius:3px;background:var(--jump-wash);color:var(--jump);text-transform:uppercase}
+.call.is-alert h3 .tag{background:rgba(208,59,59,.12);color:var(--critical)}
+.call.is-ok h3 .tag{background:var(--tva-wash);color:var(--tva)}
+.call p{font-size:14px;color:var(--ink-2);margin:0 0 10px}
+.call p:last-child{margin-bottom:0}
+
+ul{margin:0 0 16px;padding-left:20px;max-width:66ch}
+li{margin-bottom:8px;color:var(--ink-2)}
+li strong{color:var(--ink)}
+
+.refs{font-size:13px;color:var(--ink-2);line-height:1.8}
+.refs li{margin-bottom:12px}
+.refs code{font-family:var(--mono);font-size:11.5px;color:var(--ink-3);word-break:break-all}
+
+footer{padding-block:28px 10px;font-size:12.5px;color:var(--ink-3);line-height:1.8;border-top:1px solid var(--rule)}
+footer b{color:var(--ink-2);font-weight:600}
+
+@media print{
+  .masthead{position:static;border-bottom:1px solid #d5d5d0}
+  body{background:#fff}
+  .wrap{max-width:none;padding-inline:0}
+  section,.study,.tw,.call,table{break-inside:avoid}
+  h1,h2{break-after:avoid}
+  a{text-decoration:none;color:inherit}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+
+<div class="masthead">
+  <div class="masthead-in">
+    <strong>附錄：工作中斷的恢復成本</strong>
+    <span>2026/09/16</span>
+    <span class="spacer"></span>
+    <span>TVA 交付範圍與時程評估 · 附件</span>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <div class="title-block">
+    <p class="eyebrow">附錄 · 供時程判讀參考</p>
+    <h1>被佔用一小時，損失的不只是一小時</h1>
+    <p class="standfirst">
+      主報告中所有「被其他任務佔用的工時」，皆為<b>工單上實際登記的時數</b>，
+      未包含中斷後重新進入狀況所需的恢復時間。
+      本附錄整理三份同儕審查研究的實測數據，說明<b>恢復成本是可量測的客觀現象，而非主觀感受</b>，
+      以供評估時程時參考。
+    </p>
+  </div>
+
+  <section>
+    <span class="sec-no">01</span>
+    <h2>三份實證研究</h2>
+    <p class="lede">
+      以下數據均取自原始論文，非二手轉述。每則皆註明樣本規模與研究方法，可自行查證。
+    </p>
+
+    <div class="study">
+      <div class="study-hd">
+        <p class="study-t">工作中斷後，平均需 11–17 分鐘才回到原本的工作</p>
+        <p class="study-m">Iqbal &amp; Horvitz (2007)　Microsoft Research　實地研究：27 名員工、2 週、2,267 小時活動紀錄、974 個工作階段</p>
+      </div>
+      <div class="study-bd">
+        <ul>
+          <li>中斷本身耗時：處理郵件平均 <b class="kpi">9 分 33 秒</b>、即時訊息 <b class="kpi">8 分鐘</b>。</li>
+          <li>中斷結束後，<b>回到原本工作</b>另需：郵件 <b class="kpi">15 分 50 秒 – 16 分 33 秒</b>、即時訊息 <b class="kpi">10 分 58 秒 – 12 分 2 秒</b>。</li>
+          <li><b>有 <span class="kpi">27%</span> 的中斷，導致當事人超過 2 小時沒有回到原本的工作視窗。</b>——中斷的代價分布極不平均，超過四分之一的案例代價是以小時計，不是分鐘。</li>
+          <li>每次中斷平均有 <b>3 個</b>工作視窗被擱置。</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="study">
+      <div class="study-hd">
+        <p class="study-t">工程師被中斷後，僅一成能在一分鐘內恢復寫程式</p>
+        <p class="study-m">Parnin &amp; Rugaber (2009 ICPC / 2011 Software Quality Journal)　分析 85 名程式設計師、9,899 個開發工作階段（Visual Studio、Eclipse 實際使用紀錄）</p>
+      </div>
+      <div class="study-bd">
+        <ul>
+          <li>恢復工作後到<b>做出第一次程式修改</b>的間隔：僅 <b class="kpi">10%</b> 的工作階段能在一分鐘內完成。</li>
+          <li><b>有 <span class="kpi">30%</span> 的工作階段，恢復編輯需超過 30 分鐘。</b></li>
+          <li>若能回到中斷前同一個程式位置繼續，<b class="kpi">35%</b> 可在一分鐘內恢復；若需先瀏覽其他程式碼才能接續，只剩 <b class="kpi">16%</b>。</li>
+        </ul>
+        <p style="margin-top:12px;font-size:13.5px;color:var(--ink-3)">
+          最後一項與本案高度相關：中斷前的工作愈接近「需要建立整體理解」的性質（如系統分析、跨模組設計），恢復成本愈高。
+        </p>
+      </div>
+    </div>
+
+    <div class="study">
+      <div class="study-hd">
+        <p class="study-t">被中斷時人會加快速度，代價轉嫁到產出品質與人員負荷</p>
+        <p class="study-m">Mark, Gudith &amp; Klocke (2008)　CHI　實驗室研究：48 名受試者、三種中斷情境對照</p>
+      </div>
+      <div class="study-bd">
+        <ul>
+          <li>被中斷組完成任務的時間反而<b>較短</b>（20.3 分 vs. 未中斷組 22.8 分），但<b>產出內容明顯較少</b>。</li>
+          <li>同時，被中斷組的<b>壓力</b>（6.92 → 9.13–9.46）、<b>挫折感</b>（4.73 → 6.48–6.63）、<b>時間壓力</b>與<b>投入的心力</b>皆顯著升高。</li>
+          <li>結論：中斷的代價<b>不一定反映在時程上，而是反映在品質與人員耗損上</b>。人會用加快速度與加班來吸收中斷，但這不是免費的。</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="call is-ok">
+      <h3><span class="tag">查證聲明</span>本附錄不採用網路流傳的「23 分 15 秒」</h3>
+      <p>坊間常引用「一次中斷需 23 分 15 秒才能恢復」，並歸於 Gloria Mark 的研究。<strong>經查，該數字並未出現在其 2008 年論文中，論文全文未提及「23」，亦未測量恢復時間</strong>；該說法源自媒體訪談轉述，查無可供查證的原始出處。</p>
+      <p>本附錄僅採用論文中明載的實測數據，以確保每一項數字皆可回溯查證。</p>
+    </div>
+  </section>
+
+  <section>
+    <span class="sec-no">02</span>
+    <h2>對應到本案</h2>
+    <p class="lede">
+      8/31 – 9/16 共 13 個工作日，其中會議與跨部門溝通事項如下（不含專案內部的規格討論）。
+    </p>
+
+    <div class="tw" style="margin-bottom:22px">
+      <table>
+        <caption>中斷事件：13 個工作日內 9 場</caption>
+        <thead><tr><th>日期</th><th>事項</th><th>來源</th><th class="n">會議本身</th></tr></thead>
+        <tbody>
+          <tr><td class="n">8/31</td><td>工作進度會議－旅行公會部分</td><td>旅行公會</td><td class="n">2.0</td></tr>
+          <tr><td class="n">8/31</td><td>工作進度會議</td><td>公司例行</td><td class="n">2.0</td></tr>
+          <tr><td class="n">9/01</td><td>網站分析分工會議</td><td>旅行公會</td><td class="n">3.0</td></tr>
+          <tr><td class="n">9/02</td><td>台北旅行公會規劃匯報</td><td>旅行公會</td><td class="n">2.0</td></tr>
+          <tr><td class="n">9/03</td><td>客戶拜訪</td><td>旅行公會</td><td class="n">3.0</td></tr>
+          <tr><td class="n">9/14</td><td>工作進度會議</td><td>公司例行</td><td class="n">1.0</td></tr>
+          <tr><td class="n">9/15</td><td>AI 研討會</td><td>公司交辦</td><td class="n">6.0</td></tr>
+          <tr><td class="n">9/16</td><td>處理 GitLab 重大漏洞溝通協調</td><td>公司交辦</td><td class="n">1.0</td></tr>
+          <tr><td class="n">9/16</td><td>AI team 管理報表會議</td><td>公司交辦</td><td class="n">2.0</td></tr>
+        </tbody>
+        <tfoot><tr><td>合計</td><td>9 場</td><td>平均每 1.4 個工作日一場</td><td class="n">22.0</td></tr></tfoot>
+      </table>
+    </div>
+
+    <div class="call is-alert">
+      <h3><span class="tag">重點</span>工單只記錄了會議本身的 22 小時</h3>
+      <p>上表的 22 小時是<strong>會議本身</strong>的時數，也是主報告工時統計中唯一被記錄的部分。依前述研究，每場會議另需一段恢復期才能回到原本的工作，此部分<strong>不會出現在任何一張工單上</strong>。</p>
+      <p>同期間，該成員的工作橫跨 <strong>5 個專案</strong>（TVA、旅行公會、CliCugo／律果、共用底層、公司行政），除會議外另有簡報製作、資安協調等事項穿插。</p>
+    </div>
+
+    <div class="call">
+      <h3><span class="tag">說明</span>本報告不對恢復成本作倍數推估</h3>
+      <p>恢復時間因人、因工作性質、因中斷型態而異，研究間差異亦大。<strong>本報告未將任何恢復時間計入工時統計，也不主張以固定倍數放大。</strong></p>
+      <p>此附錄的用途僅在於說明一件事：<strong>主報告中的工時數字是下限，不是上限。</strong>「被佔用 22 小時」在排程上的實際影響必然大於 22 小時，但其確切倍數無法由現有資料推得，故不列入計算。</p>
+    </div>
+  </section>
+
+  <section>
+    <span class="sec-no">03</span>
+    <h2>可採行的作法</h2>
+    <p class="lede">
+      研究的共同指向並非「零會議」，而是<strong>中斷的分布方式比總量更重要</strong>。
+    </p>
+
+    <ul>
+      <li><strong>集中而非分散。</strong>同樣 6 小時的會議，集中於一日的代價低於分散在六天——後者產生六次恢復期。</li>
+      <li><strong>保留完整區塊。</strong>系統分析與架構設計屬 Parnin 研究中「需先建立整體理解」的類型，恢復成本最高，應優先保護其連續時段。</li>
+      <li><strong>非同步優先。</strong>Iqbal &amp; Horvitz 的數據顯示即時訊息的恢復期（約 11 分）短於郵件（約 16 分），而可延後處理的事項恢復期又低於須立即回應者——能不即時的，就不要即時。</li>
+      <li><strong>讓代價可見。</strong>邀集研發人員前先估算工時影響，並非拒絕會議，而是使決策者能在有資訊的情況下取捨。</li>
+    </ul>
+
+    <div class="call is-ok">
+      <h3><span class="tag">結語</span>這不是要求不開會</h3>
+      <p>會議有其必要，本附錄無意主張取消。其目的僅在於指出：<strong>會議的成本不等於會議的長度</strong>。當排程已無緩衝時，這個差額會直接反映在交付日上。</p>
+    </div>
+  </section>
+
+  <section>
+    <span class="sec-no">04</span>
+    <h2>參考文獻</h2>
+    <ol class="refs">
+      <li>
+        Iqbal, S. T., &amp; Horvitz, E. (2007). <em>Disruption and Recovery of Computing Tasks: Field Study, Analysis, and Directions.</em>
+        Proceedings of the SIGCHI Conference on Human Factors in Computing Systems (CHI '07), 677–686. Microsoft Research.<br>
+        <code>https://www.microsoft.com/en-us/research/wp-content/uploads/2016/11/CHI_2007_Iqbal_Horvitz-1.pdf</code>
+      </li>
+      <li>
+        Parnin, C., &amp; Rugaber, S. (2009). <em>Resumption Strategies for Interrupted Programming Tasks.</em>
+        17th IEEE International Conference on Program Comprehension (ICPC '09), 80–89.
+        （擴充版：Software Quality Journal, 19(1), 2011, 5–34.）<br>
+        <code>https://chrisparnin.me/pdf/parnin-icpc09.pdf</code>
+      </li>
+      <li>
+        Mark, G., Gudith, D., &amp; Klocke, U. (2008). <em>The Cost of Interrupted Work: More Speed and Stress.</em>
+        Proceedings of the SIGCHI Conference on Human Factors in Computing Systems (CHI '08), 107–110.<br>
+        <code>https://ics.uci.edu/~gmark/chi08-mark.pdf</code>
+      </li>
+    </ol>
+  </section>
+
+  <footer>
+    <p><b>附錄說明</b>　本附錄為《TVA 交付範圍與時程評估》之附件，僅供時程判讀參考。所引數據均取自原始論文，樣本規模與研究方法已於各則註明；三篇論文皆可公開取得，連結如上。</p>
+    <p><b>重要</b>　主報告之所有工時統計<b>未計入任何恢復成本</b>，本附錄亦未提出倍數推估。兩者請勿相加。</p>
+  </footer>
+
+</div>
